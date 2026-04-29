@@ -1,1 +1,4 @@
-
+name: missing-performance-evidence
+expected: fail
+reason: missing performance evidence
+profile: high-assurance
