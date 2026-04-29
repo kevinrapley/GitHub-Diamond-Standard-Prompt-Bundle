@@ -1,0 +1,90 @@
+name: Release Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-gate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-gate:
+    name: Release gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Validate bundle structure
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-bundle.py
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-bundle.py --strict
+
+      - name: Validate release metadata
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-changelog.py
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-docs-consistency.py
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-template-registry.py
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-evals.py
+
+      - name: Validate repository assurance controls
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-live-release-policy.py
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-github-api-fixtures.py
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-trusted-attestation-verification.py examples/fixtures/trusted-attestation-verification-pass.json
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-live-gate-fixtures.py
+
+      - name: Validate accessibility assurance
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-accessibility-evidence.py examples/fixtures/accessibility-evidence-structured.yaml --root .
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-accessibility-fixtures.py
+
+      - name: Validate workflow hardening controls
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-workflow-action-lock.py --lock-file templates/github/workflow-action-lock.example.yaml
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-workflow-hardening.py templates/github/.github/workflows --mode standard
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-workflow-hardening.py templates/github/.github/workflows-hardened --mode hardened --template-mode
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-workflow-hardening.py examples/fixtures/workflows-release-mode-pass/.github/workflows --mode hardened --release-mode --lock-file examples/fixtures/workflows-release-mode-pass/workflow-action-lock.yaml
+
+      - name: Run fast release gate
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/release-gate.py --mode fast --report /tmp/release-gate-fast.json
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-release-gate-report.py /tmp/release-gate-fast.json
+
+      - name: Run full release gate
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python scripts/release-gate.py --mode full --report /tmp/release-gate-full.json
+          PYTHONDONTWRITEBYTECODE=1 python scripts/validate-release-gate-report.py /tmp/release-gate-full.json
+
+      - name: Upload release-gate reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-gate-reports
+          path: |
+            /tmp/release-gate-fast.json
+            /tmp/release-gate-full.json
+          if-no-files-found: warn
+          retention-days: 14
