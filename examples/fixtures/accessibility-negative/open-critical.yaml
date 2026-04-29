@@ -4,7 +4,7 @@ automated_checks:
     file: results/axe-pass.json
   pa11y:
     tool: pa11y
-    file: results/pa11y-fail.json
+    file: results/pa11y-pass.json
   lighthouse:
     tool: lighthouse
     file: results/lighthouse-pass.json
@@ -23,7 +23,7 @@ assistive_technology_matrix:
     platform: Windows
     result: pass
 defects:
-  - id: A11Y-LOW
-    severity: low
-    status: closed
+  - id: A11Y-CRIT
+    severity: critical
+    status: open
 release_decision: pass

@@ -4,10 +4,10 @@ automated_checks:
     file: results/axe-pass.json
   pa11y:
     tool: pa11y
-    file: results/pa11y-fail.json
+    file: results/pa11y-pass.json
   lighthouse:
     tool: lighthouse
-    file: results/lighthouse-pass.json
+    file: results/lighthouse-fail.json
 keyboard_tests:
   - name: Keyboard journey
     steps: [Tab through page]
