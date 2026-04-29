@@ -13,7 +13,7 @@ SECRET_PATTERNS = [
     re.compile(r"AKIA[0-9A-Z]{16}"),
     re.compile(r"(?i)(api[_-]?key|secret|password)\s*[:=]\s*['\"][^'\"]{8,}['\"]"),
 ]
-GENERATED_PARTS = {"__pycache__", ".pytest_cache", "node_modules", "dist", "build", "coverage", "artifacts", "tmp", "temp", "__MACOSX"}
+GENERATED_PARTS = {"__pycache__", ".pytest_cache", ".git", "node_modules", "dist", "build", "coverage", "artifacts", "tmp", "temp", "__MACOSX"}
 GENERATED_SUFFIXES = {".pyc", ".pyo", ".log"}
 
 def is_generated(path: Path) -> bool:
