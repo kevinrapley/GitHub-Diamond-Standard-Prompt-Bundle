@@ -1,0 +1,25 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CycloneDX SBOM
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: actions/setup-python@0000000000000000000000000000000000000000
+        with:
+          python-version: '3.12'
+      - name: Generate CycloneDX dependency SBOM
+        run: python scripts/generate-sbom.py --root . --output artifacts/sbom.cyclonedx.json
+      - uses: actions/upload-artifact@0000000000000000000000000000000000000000
+        with:
+          name: sbom-cyclonedx
+          path: artifacts/sbom.cyclonedx.json

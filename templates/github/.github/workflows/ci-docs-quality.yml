@@ -1,0 +1,38 @@
+name: CI (Documentation Quality)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install docs tooling
+        run: |
+          npm install -g markdownlint-cli cspell markdown-link-check
+          if [ -f requirements-docs.txt ]; then python -m pip install -r requirements-docs.txt; fi
+      - name: Lint markdown
+        run: markdownlint "**/*.md"
+      - name: Spell check
+        run: cspell "**/*.{md,js,ts,py,yml,yaml}"
+      - name: Link check
+        run: |
+          find . -name "*.md" -not -path "./node_modules/*" -print0 | xargs -0 -n1 markdown-link-check
+      - name: Build docs
+        run: |
+          if [ -f mkdocs.yml ]; then python -m pip install mkdocs && mkdocs build --strict
+          elif [ -f docs/conf.py ]; then python -m pip install sphinx && sphinx-build -b html docs docs/_build
+          else echo "No docs build configured"
+          fi

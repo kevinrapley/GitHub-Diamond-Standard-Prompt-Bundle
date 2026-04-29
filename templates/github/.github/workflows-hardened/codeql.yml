@@ -1,0 +1,21 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CodeQL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: github/codeql-action/init@0000000000000000000000000000000000000000
+      - uses: github/codeql-action/analyze@0000000000000000000000000000000000000000

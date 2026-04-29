@@ -1,0 +1,62 @@
+name: CI (Node)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Detect package manager
+        id: pm
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f pnpm-lock.yaml ]; then PM="pnpm"
+          elif [ -f yarn.lock ]; then PM="yarn"
+          elif [ -f bun.lockb ] || [ -f bun.lock ]; then PM="bun"
+          else PM="npm"
+          fi
+          echo "pm=$PM" >> "$GITHUB_OUTPUT"
+      - name: Enable package manager
+        run: |
+          corepack enable
+          if [ "${{ steps.pm.outputs.pm }}" = "bun" ]; then npm install -g bun; fi
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          PM="${{ steps.pm.outputs.pm }}"
+          case "$PM" in
+            pnpm) pnpm install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile ;;
+            bun) bun install --frozen-lockfile ;;
+            npm) npm ci ;;
+          esac
+      - name: Format
+        run: |
+          PM="${{ steps.pm.outputs.pm }}"
+          node -e "const p=require('./package.json'); process.exit(p.scripts?.['format:check']?0:1)"
+          $PM run format:check
+      - name: Lint
+        run: |
+          PM="${{ steps.pm.outputs.pm }}"
+          node -e "const p=require('./package.json'); process.exit(p.scripts?.lint?0:1)"
+          $PM run lint
+      - name: Test
+        run: |
+          PM="${{ steps.pm.outputs.pm }}"
+          node -e "const p=require('./package.json'); process.exit(p.scripts?.test?0:1)"
+          $PM test
+      - name: Build
+        run: |
+          PM="${{ steps.pm.outputs.pm }}"
+          if node -e "const p=require('./package.json'); process.exit(p.scripts?.build?0:1)"; then $PM run build; fi

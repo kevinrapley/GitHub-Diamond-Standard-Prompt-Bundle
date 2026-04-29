@@ -1,7 +1,7 @@
 bundle:
   id: github-diamond-standard
   version: 2.9.1
-  status: auditable-release-assurance
+  status: fully-auditable-assurance-regime
 artifacts:
 - path: .gitignore
   sha256: 05a152f1b5f03bbe0cab0df43a62733cab3f88a7cb1298da261c30b8b215a9e0
@@ -287,10 +287,14 @@ artifacts:
   sha256: 01f34c5291f1d254c9f18c43008073739be8e351bed0771be784169d8555819c
 - path: examples/performance-results/rust-results.yaml
   sha256: 197406b108fcf2cab3b311ff987658962fa4bf62064fc71a731184998f926933
+- path: github-diamond-prompt-bundle-v2.9.1.zip
+  sha256: aceaa9fc00eee419c9f99561b2e5cfacac039fd10747677d25bf9700e645d7b5
 - path: grade.schema.json
   sha256: 1042e384faf41b1a3bd58fdb21b51fa58347f2d0df8a446e72aa3fed0f0d2b62
 - path: graders/accessibility-grader.xml
   sha256: 1f3d434e8e3c669ea232dad9756c5f4f0648304d301fce98e93facabb6874503
+- path: graders/accessibility-grader.yaml
+  sha256: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
 - path: graders/ci-selection-grader.xml
   sha256: 5c8c9e7d805fc3d580f75a07ccc2f5ed5797ae3556dcb39365e137a8de97f67c
 - path: graders/code-confidence-grader.xml
@@ -446,7 +450,7 @@ artifacts:
 - path: scripts/validate-agent-evidence.py
   sha256: 7ed427d6aae1212500b3a9547dbff9aa57b580ec15d680c33c1b688249fed952
 - path: scripts/validate-bundle.py
-  sha256: a085f00149ee800e5267256d3ac062520ddf449c88d07ccf780b82d5503f030d
+  sha256: eeeb0371e9a8b952eb157b8e614e4be1da1abb31bcf7ea46d6a7e3c3fdc1f051
 - path: scripts/validate-changelog.py
   sha256: 697806c2e1e718fb1ce35beff7603a8c03a8392dc49d6e94cf4e388007436e1f
 - path: scripts/validate-docs-consistency.py

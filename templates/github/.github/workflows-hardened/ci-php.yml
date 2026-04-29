@@ -1,0 +1,27 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CI (PHP)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: shivammathur/setup-php@0000000000000000000000000000000000000000
+        with:
+          php-version: '8.3'
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Lint
+        run: vendor/bin/phpcs
+      - name: Static analysis
+        run: vendor/bin/phpstan analyse
+      - name: Test
+        run: vendor/bin/phpunit

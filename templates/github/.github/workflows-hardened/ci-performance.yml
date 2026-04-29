@@ -1,0 +1,37 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CI (Performance)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: actions/setup-python@0000000000000000000000000000000000000000
+        with:
+          python-version: '3.12'
+      - name: Run performance benchmarks
+        run: |
+          echo "Benchmarks should write performance-results.yaml"
+          if [ -f package.json ] && npm run | grep -q "benchmark"; then npm run benchmark
+          elif [ -f Cargo.toml ]; then cargo bench
+          elif [ -f go.mod ]; then go test -bench ./...
+          fi
+      - name: Check performance budget
+        run: |
+          python scripts/check-performance-budget.py --budget performance-budget.yaml --results performance-results.yaml --mode blocking
+      - uses: actions/upload-artifact@0000000000000000000000000000000000000000
+        if: always()
+        with:
+          name: performance-results
+          path: |
+            performance-results.yaml
+            performance-budget.yaml
+            performance-results/**

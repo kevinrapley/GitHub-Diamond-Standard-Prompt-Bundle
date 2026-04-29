@@ -1,0 +1,36 @@
+name: CI (Performance)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run performance benchmarks
+        run: |
+          echo "Benchmarks should write performance-results.yaml"
+          if [ -f package.json ] && npm run | grep -q "benchmark"; then npm run benchmark
+          elif [ -f Cargo.toml ]; then cargo bench
+          elif [ -f go.mod ]; then go test -bench ./...
+          fi
+      - name: Check performance budget
+        run: |
+          python scripts/check-performance-budget.py --budget performance-budget.yaml --results performance-results.yaml --mode blocking
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-results
+          path: |
+            performance-results.yaml
+            performance-budget.yaml
+            performance-results/**

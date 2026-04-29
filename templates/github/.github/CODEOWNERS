@@ -1,0 +1,5 @@
+# Default code ownership for repository governance.
+/* @repository-maintainers
+.github/workflows/* @repository-maintainers
+SECURITY.md @repository-maintainers
+github-settings.yaml @repository-maintainers

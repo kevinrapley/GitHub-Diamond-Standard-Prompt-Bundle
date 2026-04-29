@@ -1,0 +1,27 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CI (Java)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: actions/setup-java@0000000000000000000000000000000000000000
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Build and test
+        run: |
+          if [ -f pom.xml ]; then mvn --batch-mode verify
+          elif [ -f gradlew ]; then chmod +x ./gradlew && ./gradlew build --no-daemon
+          else echo "No Maven or Gradle build file found"; exit 1
+          fi
