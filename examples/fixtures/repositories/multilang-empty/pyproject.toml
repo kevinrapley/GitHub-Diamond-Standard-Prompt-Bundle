@@ -1,0 +1,6 @@
+[project]
+name = "example-backend"
+version = "0.1.0"
+
+[project.optional-dependencies]
+dev = ["black", "ruff", "pytest", "mypy"]

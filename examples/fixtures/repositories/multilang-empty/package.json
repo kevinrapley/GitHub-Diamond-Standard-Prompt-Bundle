@@ -1,0 +1,10 @@
+{
+  "name": "example-ui",
+  "version": "0.1.0",
+  "scripts": {
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "vitest",
+    "build": "vite build"
+  }
+}

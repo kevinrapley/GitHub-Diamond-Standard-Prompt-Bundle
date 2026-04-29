@@ -1,0 +1,20 @@
+{
+  "gate": "offline-bundle-release",
+  "mode": "fast",
+  "status": "passed",
+  "started_at_unix": 1770000000,
+  "duration_seconds": 1.2,
+  "commands": [
+    {
+      "command": [
+        "scripts/validate-changelog.py"
+      ],
+      "status": "passed",
+      "duration_seconds": 0.1,
+      "stdout_tail": "Changelog validation passed.",
+      "stderr_tail": "",
+      "returncode": 0,
+      "error": null
+    }
+  ]
+}

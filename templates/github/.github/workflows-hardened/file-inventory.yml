@@ -1,0 +1,22 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: File Inventory
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - name: Generate file inventory
+        run: |
+          mkdir -p artifacts
+          find . -type f -not -path './.git/*' -print | sort > artifacts/file-inventory.txt
+      - uses: actions/upload-artifact@0000000000000000000000000000000000000000
+        with:
+          name: file-inventory
+          path: artifacts/file-inventory.txt

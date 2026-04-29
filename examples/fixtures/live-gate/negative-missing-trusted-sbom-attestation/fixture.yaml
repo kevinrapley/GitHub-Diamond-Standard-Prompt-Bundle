@@ -1,0 +1,4 @@
+name: missing-trusted-sbom-attestation
+expected: fail
+reason: missing trusted sbom attestation
+profile: high-assurance

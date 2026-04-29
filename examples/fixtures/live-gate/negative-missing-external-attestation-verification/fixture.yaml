@@ -1,0 +1,4 @@
+name: missing-external-attestation-verification
+expected: fail
+reason: missing external attestation verification
+profile: high-assurance

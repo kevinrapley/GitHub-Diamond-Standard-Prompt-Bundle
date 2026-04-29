@@ -1,0 +1,42 @@
+{
+  "gate": "offline-bundle-release",
+  "mode": "failure-fixture",
+  "status": "failed",
+  "started_at_unix": 1770000000,
+  "duration_seconds": 1.3,
+  "failed_command": [
+    "scripts/fail-intentionally.py"
+  ],
+  "error": {
+    "type": "CommandFailed",
+    "message": "Intentional failure fixture",
+    "returncode": 1
+  },
+  "commands": [
+    {
+      "command": [
+        "scripts/validate-changelog.py"
+      ],
+      "status": "passed",
+      "duration_seconds": 0.1,
+      "stdout_tail": "Changelog validation passed.",
+      "stderr_tail": "",
+      "returncode": 0,
+      "error": null
+    },
+    {
+      "command": [
+        "scripts/fail-intentionally.py"
+      ],
+      "status": "failed",
+      "duration_seconds": 0.1,
+      "stdout_tail": "Intentional failure fixture",
+      "stderr_tail": "",
+      "returncode": 1,
+      "error": {
+        "type": "SystemExit",
+        "message": "exit code 1"
+      }
+    }
+  ]
+}

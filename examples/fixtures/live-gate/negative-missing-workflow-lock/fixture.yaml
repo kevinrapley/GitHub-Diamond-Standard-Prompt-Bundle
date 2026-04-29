@@ -1,0 +1,4 @@
+name: missing-workflow-lock
+expected: fail
+reason: missing workflow lock
+profile: high-assurance

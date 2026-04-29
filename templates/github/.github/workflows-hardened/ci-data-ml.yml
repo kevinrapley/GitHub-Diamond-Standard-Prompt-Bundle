@@ -1,0 +1,30 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CI (Data and ML)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  data-ml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: actions/setup-python@0000000000000000000000000000000000000000
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          python -m pip install nbqa black ruff pytest
+      - name: Format notebooks and code
+        run: python -m nbqa black notebooks
+      - name: Lint
+        run: python -m ruff check .
+      - name: Test
+        run: python -m pytest

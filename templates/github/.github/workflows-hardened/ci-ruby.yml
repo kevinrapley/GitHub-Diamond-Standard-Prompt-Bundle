@@ -1,0 +1,24 @@
+# Hardened template. Replace placeholder SHAs with reviewed lock-file pins before use.
+name: CI (Ruby)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ruby:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@0000000000000000000000000000000000000000
+      - uses: ruby/setup-ruby@0000000000000000000000000000000000000000
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Lint
+        run: bundle exec rubocop
+      - name: Test
+        run: bundle exec rspec

@@ -1,0 +1,4 @@
+name: missing-github-api-observability
+expected: fail
+reason: missing github api observability
+profile: high-assurance
