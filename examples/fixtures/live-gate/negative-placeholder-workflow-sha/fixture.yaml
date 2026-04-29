@@ -1,1 +1,4 @@
-
+name: placeholder-workflow-sha
+expected: fail
+reason: placeholder workflow sha
+profile: high-assurance
