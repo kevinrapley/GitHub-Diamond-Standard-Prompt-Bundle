@@ -1,1 +1,4 @@
-
+name: offline-test-attestation
+expected: fail
+reason: offline test attestation
+profile: high-assurance
